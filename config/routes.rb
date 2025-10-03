@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  namespace :api do
+  # Fuerza JSON por defecto en toda la API
+  namespace :api, defaults: { format: :json } do
     namespace :v1 do
       namespace :auth do
         post :password_login, to: 'password#login'
