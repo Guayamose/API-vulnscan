@@ -1,0 +1,67 @@
+<div class="row g-3">
+  <div class="col-md-3">
+    <div class="card text-bg-primary"><div class="card-body">
+      <div class="card-title h6 mb-1">Organizations</div>
+      <div class="display-6"><%= @orgs_count %></div>
+    </div></div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-bg-secondary"><div class="card-body">
+      <div class="card-title h6 mb-1">Users</div>
+      <div class="display-6"><%= @users_count %></div>
+    </div></div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-bg-success"><div class="card-body">
+      <div class="card-title h6 mb-1">Scans</div>
+      <div class="display-6"><%= @scans_count %></div>
+    </div></div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-bg-danger"><div class="card-body">
+      <div class="card-title h6 mb-1">Findings</div>
+      <div class="display-6"><%= @findings_count %></div>
+    </div></div>
+  </div>
+</div>
+
+<div class="row g-4 mt-2">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">Recent Scans</div>
+      <table class="table table-sm mb-0">
+        <thead><tr><th>ID</th><th>Project</th><th>Status</th><th>Started</th></tr></thead>
+        <tbody>
+          <% @recent_scans.each do |s| %>
+            <tr>
+              <td><a href="/admin/scans/<%= s.id %>"><%= s.id %></a></td>
+              <td><%= s.project_slug %></td>
+              <td><%= s.status %></td>
+              <td class="nowrap"><%= s.started_at %></td>
+            </tr>
+          <% end %>
+          <% if @recent_scans.empty? %><tr><td colspan="4" class="text-muted">No scans yet</td></tr><% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">Recent Findings</div>
+      <table class="table table-sm mb-0">
+        <thead><tr><th>ID</th><th>Rule</th><th>Severity</th><th>File</th></tr></thead>
+        <tbody>
+          <% @recent_findings.each do |f| %>
+            <tr>
+              <td><a href="/admin/findings/<%= f.id %>"><%= f.id %></a></td>
+              <td><%= f.rule_id %></td>
+              <td><%= f.severity %></td>
+              <td class="truncate"><%= f.file_path %>:#<%= f.line %></td>
+            </tr>
+          <% end %>
+          <% if @recent_findings.empty? %><tr><td colspan="4" class="text-muted">No findings yet</td></tr><% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

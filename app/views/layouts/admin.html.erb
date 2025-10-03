@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Oryon Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CDN -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <style>
+    .truncate { max-width: 520px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .nowrap { white-space: nowrap; }
+  </style>
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/admin">Oryon Admin</a>
+    <div class="navbar-nav">
+      <a class="nav-link" href="/admin/organizations">Organizations</a>
+      <a class="nav-link" href="/admin/users">Users</a>
+      <a class="nav-link" href="/admin/scans">Scans</a>
+      <a class="nav-link" href="/admin/findings">Findings</a>
+    </div>
+  </div>
+</nav>
+<main class="container">
+  <%= yield %>
+</main>
+</body>
+</html>

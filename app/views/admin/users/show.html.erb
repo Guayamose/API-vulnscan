@@ -1,0 +1,23 @@
+<h2>User #<%= @user.id %></h2>
+<ul>
+  <li>Email: <%= @user.email %></li>
+  <li>Org: <%= @user.organization&.slug %></li>
+  <li>Role: <%= @user.role %></li>
+  <li>Created: <%= @user.created_at %></li>
+</ul>
+
+<h4 class="mt-4">Scans by user</h4>
+<table class="table table-sm">
+  <thead><tr><th>ID</th><th>Project</th><th>Status</th><th>Started</th></tr></thead>
+  <tbody>
+    <% @scans.each do |s| %>
+      <tr>
+        <td><a href="/admin/scans/<%= s.id %>"><%= s.id %></a></td>
+        <td><%= s.project_slug %></td>
+        <td><%= s.status %></td>
+        <td class="nowrap"><%= s.started_at %></td>
+      </tr>
+    <% end %>
+    <% if @scans.empty? %><tr><td colspan="4" class="text-muted">No scans</td></tr><% end %>
+  </tbody>
+</table>

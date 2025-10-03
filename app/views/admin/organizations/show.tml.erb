@@ -1,0 +1,33 @@
+<h2>Organization: <%= @org.name %> (<%= @org.slug %>)</h2>
+<p class="text-muted">ID: <%= @org.id %></p>
+
+<h4 class="mt-4">Users</h4>
+<table class="table table-sm">
+  <thead><tr><th>ID</th><th>Email</th><th>Role</th></tr></thead>
+  <tbody>
+    <% @users.each do |u| %>
+      <tr>
+        <td><a href="/admin/users/<%= u.id %>"><%= u.id %></a></td>
+        <td><%= u.email %></td>
+        <td><%= u.role %></td>
+      </tr>
+    <% end %>
+    <% if @users.empty? %><tr><td colspan="3" class="text-muted">No users</td></tr><% end %>
+  </tbody>
+</table>
+
+<h4 class="mt-4">Recent Scans</h4>
+<table class="table table-sm">
+  <thead><tr><th>ID</th><th>Project</th><th>Status</th><th>Started</th></tr></thead>
+  <tbody>
+    <% @scans.each do |s| %>
+      <tr>
+        <td><a href="/admin/scans/<%= s.id %>"><%= s.id %></a></td>
+        <td><%= s.project_slug %></td>
+        <td><%= s.status %></td>
+        <td class="nowrap"><%= s.started_at %></td>
+      </tr>
+    <% end %>
+    <% if @scans.empty? %><tr><td colspan="4" class="text-muted">No scans</td></tr><% end %>
+  </tbody>
+</table>

@@ -1,0 +1,29 @@
+<h2>Scan #<%= @scan.id %></h2>
+<ul>
+  <li>Org: <strong><%= @scan.org %></strong></li>
+  <li>User Ref: <%= @scan.user_ref %></li>
+  <li>Project: <%= @scan.project_slug %></li>
+  <li>Type: <%= @scan.scan_type %></li>
+  <li>Status: <%= @scan.status %></li>
+  <li>Started: <%= @scan.started_at %></li>
+  <li>Finished: <%= @scan.finished_at %></li>
+  <li>Findings: <%= @scan.findings_ingested %> (deduped: <%= @scan.deduped %>)</li>
+  <li>Idempotency-Key: <code><%= @scan.idempotency_key %></code></li>
+</ul>
+
+<h4 class="mt-4">Findings</h4>
+<table class="table table-sm">
+  <thead><tr><th>ID</th><th>Rule</th><th>Severity</th><th>File</th><th>Message</th></tr></thead>
+  <tbody>
+    <% @findings.each do |f| %>
+      <tr>
+        <td><a href="/admin/findings/<%= f.id %>"><%= f.id %></a></td>
+        <td><%= f.rule_id %></td>
+        <td><%= f.severity %></td>
+        <td class="truncate"><%= f.file_path %>:#<%= f.line %></td>
+        <td class="truncate"><%= f.message %></td>
+      </tr>
+    <% end %>
+    <% if @findings.empty? %><tr><td colspan="5" class="text-muted">No findings for this scan</td></tr><% end %>
+  </tbody>
+</table>
