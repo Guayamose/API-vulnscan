@@ -1,32 +1,51 @@
-# app/controllers/api/v1/auth/tokens_controller.rb
-class Api::V1::Auth::TokensController < ApplicationController
-  # ... refresh y revoke como ya los tienes ...
+# app/controllers/application_controller.rb
+class ApplicationController < ActionController::API
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
 
-  # GET /api/v1/auth/whoami
-  # Acepta:
-  #  - Authorization: Bearer <access>
-  #  - token[access]=<jwt> (query/body), para compat
-  def whoami
+  before_action :force_json # forza JSON en la API
+
+  def render_error(code, msg, status, details = {})
+    render json: { error: code, message: msg, details: details }, status: status
+  end
+
+  def not_found = render_error('not_found', 'resource not found', :not_found)
+
+  # Valida Authorization: Bearer ... o token[access] en query/body
+  def require_bearer!
     token = extract_access_token
     return render_error('invalid_token', 'missing/invalid bearer', :unauthorized) if token.blank?
 
-    begin
-      payload, = JWT.decode(token, ENV.fetch('JWT_SECRET'), true, { algorithm: 'HS256' })
+    payload, = JWT.decode(token, ENV.fetch('JWT_SECRET'), true, { algorithm: 'HS256' })
 
-      sub   = payload['sub'] || payload['user_id']
-      org   = payload['org']
-      role  = payload['role']  || payload['scope']
-      scope = payload['scope'] || payload['role']
+    @current_user_id = payload['sub'] || payload['user_id']
+    @current_org     = payload['org']
+    # Compat: a veces viene role/scope intercambiado
+    @current_scope   = payload['scope'] || payload['role']
+    @current_role    = payload['role']  || payload['scope']
+    nil
+  rescue JWT::DecodeError, JWT::ExpiredSignature
+    render_error('invalid_token', 'token invalid/expired', :unauthorized)
+  end
 
-      render json: {
-        sub:     sub,
-        user_id: sub,   # compat con clientes que miran user_id
-        org:     org,
-        role:    role,
-        scope:   scope
-      }
-    rescue JWT::ExpiredSignature, JWT::DecodeError
-      render_error('invalid_token', 'token invalid/expired', :unauthorized)
+  private
+
+  # asegura que el request se procese como JSON
+  def force_json
+    request.format = :json
+  end
+
+  # Header Bearer o params[:token][:access]
+  def extract_access_token
+    auth = request.authorization.to_s
+    if auth =~ /\ABearer\s+(.+)\z/i
+      return Regexp.last_match(1)
     end
+
+    t = params[:token]
+    if t.is_a?(ActionController::Parameters) || t.is_a?(Hash)
+      v = t[:access] || t['access']
+      return v if v.present?
+    end
+    nil
   end
 end
