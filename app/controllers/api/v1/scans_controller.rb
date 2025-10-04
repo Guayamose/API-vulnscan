@@ -1,4 +1,6 @@
+# app/controllers/api/v1/scans_controller.rb
 require 'digest'
+
 class Api::V1::ScansController < ApplicationController
   before_action :require_bearer!, only: :create
 
@@ -36,12 +38,21 @@ class Api::V1::ScansController < ApplicationController
   end
 
   private
+
   def scan_params
     params.permit(:org, :user_ref, :project_slug, :scan_type, :commit_sha,
                   :started_at, :finished_at, :findings_ingested, :deduped, :status)
   end
+
+  # <-- CAMBIO: devolvemos id y scan_id
   def success(s)
-    { scan_id: s.id.to_s, findings_ingested: s.findings_ingested, deduped: s.deduped,
-      status: s.status, meta: { project_slug: s.project_slug, scan_type: s.scan_type } }
+    {
+      id: s.id.to_s,                       # <-- nuevo
+      scan_id: s.id.to_s,                  # compat con clientes antiguos
+      findings_ingested: s.findings_ingested,
+      deduped: s.deduped,
+      status: s.status,
+      meta: { project_slug: s.project_slug, scan_type: s.scan_type }
+    }
   end
 end
