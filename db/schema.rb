@@ -24,6 +24,20 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_28_012019) do
     t.string "fingerprint_hint"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title"
+    t.text "summary"
+    t.text "recommendation"
+    t.string "engine"
+    t.jsonb "owasp"
+    t.jsonb "cwe"
+    t.jsonb "references"
+    t.jsonb "metadata", default: {}
+    t.index ["cwe"], name: "index_findings_on_cwe", using: :gin
+    t.index ["engine"], name: "index_findings_on_engine"
+    t.index ["fingerprint_hint"], name: "index_findings_on_fingerprint_hint"
+    t.index ["metadata"], name: "index_findings_on_metadata", using: :gin
+    t.index ["owasp"], name: "index_findings_on_owasp", using: :gin
+    t.index ["references"], name: "index_findings_on_references", using: :gin
     t.index ["scan_id"], name: "index_findings_on_scan_id"
   end
 
